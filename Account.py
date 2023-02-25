@@ -1,8 +1,8 @@
+import re
+import ssl
 import pyotp
 import scrypt
 import mysql.connector
-import re
-import ssl
 import http.server
 import socketserver
 import configparser
