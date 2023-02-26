@@ -1,27 +1,36 @@
-@echo off
+name: Python application
 
-REM check if pip is installed
-py -m pip -V >nul 2>&1
-if errorlevel 1 (
-    echo Installing pip...
-    py -m ensurepip --default-pip >nul 2>&1
-    if errorlevel 1 (
-        echo Failed to install pip.
-        exit /b 1
-    )
-) else (
-    REM check if pip is up to date
-    setlocal EnableDelayedExpansion
-    for /f "tokens=3" %%v in ('py -m pip -V') do set pip_version=%%v
-    set pip_version=!pip_version:~0,-1!
-    py -m pip install --upgrade pip >nul 2>&1
-    for /f "tokens=3" %%v in ('py -m pip -V') do set new_pip_version=%%v
-    set new_pip_version=!new_pip_version:~0,-1!
-    if "!pip_version!" equ "!new_pip_version!" (
-        echo pip is up to date.
-    ) else (
-        echo Upgraded pip from !pip_version! to !new_pip_version!.
-    )
-)
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
-echo pip is installed and up to date.
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Test with pytest
+      run: |
+        pytest
