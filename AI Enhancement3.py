@@ -1,6 +1,6 @@
 import requests
 
-response = requests.get('https://accounts.google.com/o/oauth2/v2/auth
+response = requests.get('binaryauthorization.googleapis.com
     client_id=<YOUR_CLIENT_ID>&
     redirect_uri=<YOUR_REDIRECT_URI>&
     response_type=code&
