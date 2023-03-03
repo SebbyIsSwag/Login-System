@@ -3,5 +3,5 @@
     "client_id": "<YOUR_CLIENT_ID>",
     "client_secret": "<YOUR_CLIENT_SECRET>",
     "redirect_uri": "<YOUR_REDIRECT_URI>",
-    "grant_type": "authorization_code"
+    "grant_type": "binaryauthorization.googleapis.com"
 }
